@@ -36,7 +36,7 @@ def start_master():
 @roles('server_hosts')
 @parallel
 def start_server():
-    print blue("Server %s with Master %s" % (env.host, master))
+    print blue("Server %s with Master %s" % (env.host, maddr))
     with cd(work_dir):
         run(cmd_server % (env.host, maddr))
 
@@ -45,7 +45,7 @@ def start_server():
 @roles('client_hosts')
 @parallel
 def start_client():
-    print blue("Client %s with  Master %s" % (env.host, master))
+    print blue("Client %s with  Master %s" % (env.host, maddr))
     with cd(work_dir):
         run(cmd_client % maddr)
 
@@ -56,7 +56,7 @@ def start_client():
 def start_clientx(x = 5):
     if not exists("/usr/bin/xargs"):
         sudo("apt-get install xargs")
-    print blue("Client %s with  Master %s" % (env.host, master))
+    print blue("Client %s with  Master %s" % (env.host, maddr))
     with cd(work_dir):
         cmd = "echo {1..%s} | xargs -P %s -n 1 -d ' ' -I* " + cmd_client
         run(cmd  % (x, x, maddr))
