@@ -2,12 +2,13 @@ from __future__ import with_statement
 from fabric.api import *
 from fabric.colors import green, red, blue
 from fabric.contrib.files import exists
+from fabric.context_managers import lcd
 
 # hosts
 env.roledefs = {
     'master_host' : ['172.16.0.27'],
     'server_hosts': ['172.16.0.28', '172.16.0.29', '172.16.0.30'],
-    'client_hosts': ['172.16.0.31']
+    'client_hosts': ['172.16.0.27']
 }
 
 maddr = env.roledefs['master_host'][0]
@@ -68,6 +69,37 @@ def start_clientx(x = 5):
 def clean():
     execute(clean_master)
     execute(clean_server)    
+
+@task
+def install_all():
+    execute(install_client)
+    execute(install_server)
+    execute(install_master)
+
+@task
+@roles('client_hosts')
+def install_client():
+    with settings(warn_only = True), shell_env(GOPATH=work_dir), cd(work_dir):
+        run("echo $GOPATH")
+        run("rm bin/*")
+        run("go build client")
+        run("go install client")
+
+@task
+@roles('server_hosts')
+def install_server():
+    with shell_env(GOPATH=work_dir), settings(warn_only = True), cd(work_dir):
+        run("rm bin/*")
+        run("go build server")
+        run("go install server")
+
+@task
+@roles('master_host')
+def install_master():
+    with shell_env(GOPATH=work_dir), settings(warn_only = True), cd(work_dir):
+        run("rm bin/*")
+        run("go build master")
+        run("go install master")
 
 # run command in background
 def run_bg(cmd, sockname="dtach"):
