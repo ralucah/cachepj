@@ -81,7 +81,7 @@ def install_all():
 def install_client():
     with settings(warn_only = True), shell_env(GOPATH=work_dir), cd(work_dir):
         run("echo $GOPATH")
-        run("rm bin/*")
+        run("rm bin/client")
         run("go build client")
         run("go install client")
 
@@ -89,7 +89,7 @@ def install_client():
 @roles('server_hosts')
 def install_server():
     with shell_env(GOPATH=work_dir), settings(warn_only = True), cd(work_dir):
-        run("rm bin/*")
+        run("rm bin/server")
         run("go build server")
         run("go install server")
 
@@ -97,7 +97,7 @@ def install_server():
 @roles('master_host')
 def install_master():
     with shell_env(GOPATH=work_dir), settings(warn_only = True), cd(work_dir):
-        run("rm bin/*")
+        run("rm bin/master")
         run("go build master")
         run("go install master")
 
