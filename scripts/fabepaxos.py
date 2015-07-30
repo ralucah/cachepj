@@ -37,13 +37,18 @@ def start_master():
          run_bg(cmd_master)
 
 # start servers in parallel (blocking)
+def single_server():
+    return run(cmd_server % (env.host, maddr))
+
 @task(alias = 'server')
 @roles('server_hosts')
 @parallel
+@runs_once
 def start_server():
     print blue("Server %s with Master %s" % (env.host, maddr))
     with cd(work_dir):
-        run(cmd_server % (env.host, maddr))
+        results = execute(single_server)
+        print(results)
 
 # start a client per host
 @task(alias = 'client')
