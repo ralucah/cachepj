@@ -3,21 +3,25 @@ from fabric.api import *
 from fabric.colors import green, red, blue
 from fabric.contrib.files import exists
 from fabric.context_managers import lcd
+from fabric.contrib.project import rsync_project
 
 # hosts
 env.roledefs = {
-    'master_host' : ['172.16.0.27'],
-    'server_hosts': ['172.16.0.28', '172.16.0.29', '172.16.0.30'],
+    'master_host' : ['172.16.0.28'],
+    'server_hosts': ['172.16.0.29', '172.16.0.30', '172.16.0.31'],
     'client_hosts': ['172.16.0.27']
 }
 
+# master address
 maddr = env.roledefs['master_host'][0]
+
+# work directory
 work_dir = '/home/ubuntu/epaxos'
 
 # commands + configurations
 cmd_master = "bin/master -N=%d" % len(env.roledefs['server_hosts']) # default port 7087
 cmd_server = "bin/server -addr='%s' -beacon=false -dreply=true -durable=false -e=true -exec=true -maddr='%s' -p=2 -thrifty=false" # default port 7070
-cmd_client = "bin/client -c=-1 -check=false -e=true -eps=0 -maddr='%s' -p=2 -q=5000 -r=1 -s=2 -v=1 -w=100"
+cmd_client = "bin/client -c=-1 -check=false -e=true -eps=0 -maddr='%s' -p=2 -q=1 -r=1 -s=2 -v=1 -w=100"
 
 # env settings
 env.colorize_errors = True
@@ -32,7 +36,7 @@ def start_master():
     with cd(work_dir):
          run_bg(cmd_master)
 
-# start server (blocking)
+# start servers in parallel (blocking)
 @task(alias = 'server')
 @roles('server_hosts')
 @parallel
@@ -62,6 +66,14 @@ def start_clientx(x = 5):
         cmd = "echo {1..%s} | xargs -P %s -n 1 -d ' ' -I* " + cmd_client
         run(cmd  % (x, x, maddr))
 
+# rsync sources from local machine with remote machines
+@task
+@roles('master_host', 'server_hosts', 'client_hosts')
+@parallel
+def rsync():
+    if not exists("/usr/bin/rsync"):
+        sudo("apt-get install rsync")
+    rsync_project(local_dir='/home/ubuntu/epaxos', remote_dir='/home/ubuntu', exclude='.git')
 
 # clean master and servers
 @task
@@ -71,7 +83,28 @@ def clean():
     execute(clean_server)    
 
 @task
-def install_all():
+@roles('master_host')
+def clean_master():
+    with settings(warn_only = True), hide('everything'):
+        result = run("killall master")
+    if result.failed:
+        print red("Could not kill master %s!" % env.host)
+    else:
+        print green("Killed master %s!" % env.host)
+
+@task
+@roles('server_hosts')
+def clean_server():
+    with settings(warn_only = True), hide('everything'):
+        result = run("killall server")
+    if result.failed:
+        print red("Could not kill server %s!" % env.host)
+    else:
+        print green("Killed server %s!" % env.host)
+ 
+# install client, servers, master
+@task
+def install():
     execute(install_client)
     execute(install_server)
     execute(install_master)
@@ -103,25 +136,6 @@ def install_master():
 
 # run command in background
 def run_bg(cmd, sockname="dtach"):
-    return run('dtach -n `mktemp -u /tmp/%s.XXXX` %s'  % (sockname,cmd))
-
-# clean master
-@roles('master_host')
-def clean_master():
-    with settings(warn_only = True), hide('everything'):
-        result = run("killall master")
-    if result.failed:
-        print red("Could not kill master %s!" % env.host)
-    else:
-        print green("Killed master %s!" % env.host)
-
-# clean server
-@roles('server_hosts')
-def clean_server():
-    with settings(warn_only = True), hide('everything'):
-        result = run("killall server")
-    if result.failed:
-        print red("Could not kill server %s!" % env.host)
-    else:
-        print green("Killed server %s!" % env.host)
-        
+    if not exists("/usr/bin/dtach"):
+        sudo("apt-get install dtach")
+    return run('dtach -n `mktemp -u /tmp/%s.XXXX` %s'  % (sockname,cmd))      
