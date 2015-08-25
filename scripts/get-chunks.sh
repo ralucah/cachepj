@@ -1,13 +1,13 @@
 #!/bin/bash
 
-IPS=("192.168.224.141" "192.168.224.141" "192.168.224.141")
+IPS=("172.16.17.9" "172.16.35.8" "172.16.97.18")
+TAGS=("Grenoble" "Lille" "Rennes")
 TESTS=10
 
 K=6
-P=2
+P=1
 PARRAY=($P $P $P)
-#FILES=(1 4 8 16 32 64 128 256)
-FILES=(128)
+CHUNKS=(1 4 8 16 32 64 128)
 
 #function sleepy() { echo "$1 $2 $3 sleepy" ;  sleep 5s ; }
 #export -f sleepy
@@ -27,47 +27,39 @@ export -f get_chunks_parallel
 function get_chunks() {
     if [ $# -ne 3 ] ; then echo "get_chunks expects 1 arg: karray" ; exit 1 ; fi
     KARRAY=$1
-    TAG="Ren${KARRAY[0]}_Sop${KARRAY[1]}_Lux${KARRAY[2]}"
+    TAG="${TAGS[0]}${KARRAY[0]}_${TAGS[1]}${KARRAY[1]}_${TAGS[2]}${KARRAY[2]}"
 
-    for F in ${FILES[@]} ; do
-        printf "$TAG ${F}mb_chunk "
+    for C in ${CHUNKS[@]} ; do
+        printf "$TAG $C"
 
         for (( I=0;I<${#IPS[@]};I++ )) ; do
-            URLS[$I]="http://${IPS[$I]}/${F}mb_chunk"
+            URLS[$I]="http://${IPS[$I]}/$C"
         done
         if [ ${#URLS[@]} -ne 3 ] ; then echo ${URLS[@]} ; exit 1 ; fi
 
         for (( T=1; T<=${TESTS}; T++ ))
         do
-            rm *mb* 2>/dev/null
-
-            #echo "parallel -P${#URLS[@]} --gnu --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: ${PARRAY[@]}"
-            #parallel -P${#URLS[@]} --gnu --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: ${PARRAY[@]}
+            #rm *mb* 2>/dev/null
             TIME=`TIMEFORMAT="%R"; time ( parallel -P${#URLS[@]} --gnu --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: ${PARRAY[@]}) 2>&1`
-            printf "$TIME "
-
-            #GETS=`ls -l *mb* | wc -l`
-            #if [ $(( $GETS )) -eq 0 ] ; then
-            #    echo "$GETS-chunks-only"
-            #    exit
-            #fi
+            printf " $TIME"
         done
         printf "\n"
     done
 }
 export -f get_chunks
 
-KARRAY=(6 0 0)
+KARRAY=($K 0 0)
 get_chunks ${KARRAY[@]}
-#echo ""
+echo ""
 
-KARRAY=(0 6 0)
+KARRAY=(0 $K 0)
 get_chunks ${KARRAY[@]}
-#echo ""
+echo ""
 
-KARRAY=(0 0 6)
+KARRAY=(0 0 $K)
 get_chunks ${KARRAY[@]}
-#echo ""
+echo ""
 
-KARRAY=(2 2 2)
+DIV=$(( $K / 3))
+KARRAY=($DIV $DIV $DIV)
 get_chunks ${KARRAY[@]}

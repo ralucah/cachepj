@@ -1,27 +1,28 @@
 #!/bin/bash
 
 ### IPs ###
-IPS=("192.168.224.141" "192.168.224.141" "192.168.224.141")
-TAGS=("Ren" "Sop" "Lux")
+IPS=("172.16.17.9" "172.16.35.8" "172.16.97.18")
+TAGS=("G" "L" "R")
 ###########
 
 TESTS=10
 P=2
 K=6
-FILES=(1 4 8 16 32 64 128 256)
+CHUNKS=(1 4 8 16 32 64 128)
 # mkdir -p /media/ramdsk
 # mount -t tmpfs -o size=1024M tmpfs /media/ramdsk
 # mount
 RAMDISK="/media/ramdsk"
 
 function get_full {
-    for F in ${FILES[@]}
+    for C in ${CHUNKS[@]}
     do
-        printf "$2 $F "
+        FULL=$(( $C * $K))
+        printf "$2 $FULL "
         for (( i=0; i< $TESTS; i++ ))
         do
             rm $RAMDISK/*mb* 2>/dev/null
-            OUT1=`TIMEFORMAT="%R"; time ( aria2c --dir=$RAMDISK  -x $P -s $P http://$1/${F}mb ) 2>&1`
+            OUT1=`TIMEFORMAT="%R"; time ( aria2c --dir=$RAMDISK  -x $P -s $P http://$1/$FULL ) 2>&1`
             REAL1=`echo $OUT1 | awk -F: '{print $NF}'`
             printf " ${REAL1##* }"
         done

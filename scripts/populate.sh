@@ -2,30 +2,30 @@
 
 ###################################
 K=6
-FILES=(1 4 8 16 32 64 128 256)
+CHUNKS=(1 4 8 16 32 64 128)
 HTDOCS="/usr/local/apache2/htdocs/"
-SUDO="sudo"
+SUDO=""
 ###################################
 
 function populate_full {
-    for F in ${FILES[@]}
+    for C in ${CHUNKS[@]}
     do
-        echo "$F MB"
-        $SUDO dd if=/dev/urandom of=$HTDOCS/${F}mb bs=1M count=$F
+        FULL=$(( $C * $K ))
+        echo "Full: $FULL MB"
+        $SUDO dd if=/dev/urandom of=$HTDOCS/$FULL bs=${C}M count=$K
     done
 }
 
 function populate_chunks {
-    for F in ${FILES[@]}
+    for C in ${CHUNKS[@]}
     do
-        CHUNK=$(( $F * 1024 / $K ))
-        echo "$CHUNK KB"
-        $SUDO dd if=/dev/urandom of=$HTDOCS/${F}mb_chunk bs=1K count=$CHUNK
+        echo "$C MB"
+        $SUDO dd if=/dev/urandom of=$HTDOCS/${C} bs=1M count=$C
     done
 }
 
 ###################################
-$SUDO rm -rf $HTDOCS/*mb* #sudo
+$SUDO rm -rf $HTDOCS/*
 populate_full
 populate_chunks
 
