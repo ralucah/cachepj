@@ -1,10 +1,11 @@
 #!/bin/bash
 
-IPS=("192.168.224.180" "192.168.224.180" "192.168.224.180")
+IPS=("172.16.98.7" "172.16.130.34" "172.16.177.12")
 TESTS=10
 
 K=6
 P=2
+PARRAY=($P $P $P)
 FILES=(1 4 8 16 32 64 128 256)
 
 #function sleepy() { echo "$1 $2 $3 sleepy" ;  sleep 5s ; }
@@ -16,7 +17,7 @@ FILES=(1 4 8 16 32 64 128 256)
 # args: url, k, p
 function get_chunks_parallel() {
     if [ $2 -ne 0 ] ; then
-        parallel -n0 -P$3 wget $1 ::: `seq 1 $2` 1>&/dev/null
+        parallel --gnu -n0 -P$3 wget $1 ::: `seq 1 $2` 1>&/dev/null
     fi
 }
 export -f get_chunks_parallel
@@ -39,7 +40,9 @@ function get_chunks() {
         do
             rm *mb* 2>/dev/null
 
-            TIME=`TIMEFORMAT="%R"; time ( parallel -P${#URLS[@]} --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: $P ) 2>&1`
+            #echo "parallel -P${#URLS[@]} --gnu --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: ${PARRAY[@]}"
+            #parallel -P${#URLS[@]} --gnu --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: ${PARRAY[@]}
+            TIME=`TIMEFORMAT="%R"; time ( parallel -P${#URLS[@]} --gnu --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: ${PARRAY[@]}) 2>&1`
             printf "$TIME "
 
             GETS=`ls -l *mb* | wc -l`
@@ -55,15 +58,15 @@ export -f get_chunks
 
 KARRAY=(6 0 0)
 get_chunks ${KARRAY[@]}
-echo ""
+#echo ""
 
 KARRAY=(0 6 0)
 get_chunks ${KARRAY[@]}
-echo ""
+#echo ""
 
 KARRAY=(0 0 6)
 get_chunks ${KARRAY[@]}
-echo ""
+#echo ""
 
 KARRAY=(2 2 2)
 get_chunks ${KARRAY[@]}
