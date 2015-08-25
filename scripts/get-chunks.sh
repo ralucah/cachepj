@@ -1,12 +1,13 @@
 #!/bin/bash
 
-IPS=("172.16.98.7" "172.16.130.34" "172.16.177.12")
+IPS=("192.168.224.141" "192.168.224.141" "192.168.224.141")
 TESTS=10
 
 K=6
 P=2
 PARRAY=($P $P $P)
-FILES=(1 4 8 16 32 64 128 256)
+#FILES=(1 4 8 16 32 64 128 256)
+FILES=(128)
 
 #function sleepy() { echo "$1 $2 $3 sleepy" ;  sleep 5s ; }
 #export -f sleepy
@@ -17,7 +18,7 @@ FILES=(1 4 8 16 32 64 128 256)
 # args: url, k, p
 function get_chunks_parallel() {
     if [ $2 -ne 0 ] ; then
-        parallel --gnu -n0 -P$3 wget $1 ::: `seq 1 $2` 1>&/dev/null
+        parallel --gnu -n0 -P$3 wget -qO- $1 &> /dev/null ::: `seq 1 $2` #1>&/dev/null
     fi
 }
 export -f get_chunks_parallel
@@ -45,11 +46,11 @@ function get_chunks() {
             TIME=`TIMEFORMAT="%R"; time ( parallel -P${#URLS[@]} --gnu --xapply get_chunks_parallel ::: ${URLS[@]} ::: ${KARRAY[@]} ::: ${PARRAY[@]}) 2>&1`
             printf "$TIME "
 
-            GETS=`ls -l *mb* | wc -l`
-            if [ $(( $GETS )) -eq 0 ] ; then
-                echo "$GETS-chunks-only"
-                exit
-            fi
+            #GETS=`ls -l *mb* | wc -l`
+            #if [ $(( $GETS )) -eq 0 ] ; then
+            #    echo "$GETS-chunks-only"
+            #    exit
+            #fi
         done
         printf "\n"
     done

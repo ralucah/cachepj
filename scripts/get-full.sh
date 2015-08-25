@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### IPs ###
-IPS=("172.16.98.7" "172.16.130.34" "172.16.177.12")
+IPS=("192.168.224.141" "192.168.224.141" "192.168.224.141")
 TAGS=("Ren" "Sop" "Lux")
 ###########
 
@@ -9,6 +9,10 @@ TESTS=10
 P=2
 K=6
 FILES=(1 4 8 16 32 64 128 256)
+# mkdir -p /media/ramdsk
+# mount -t tmpfs -o size=1024M tmpfs /media/ramdsk
+# mount
+RAMDISK="/media/ramdsk"
 
 function get_full {
     for F in ${FILES[@]}
@@ -16,16 +20,10 @@ function get_full {
         printf "$2 $F "
         for (( i=0; i< $TESTS; i++ ))
         do
-            rm *mb* 2>/dev/null
-            #OUT1=`TIMEFORMAT="%R"; time ( wget $1/${F}mb ) 2>&1`
-            OUT1=`TIMEFORMAT="%R"; time ( aria2c -x $P -s $P http://$1/${F}mb ) 2>&1`
+            rm $RAMDISK/*mb* 2>/dev/null
+            OUT1=`TIMEFORMAT="%R"; time ( aria2c --dir=$RAMDISK  -x $P -s $P http://$1/${F}mb ) 2>&1`
             REAL1=`echo $OUT1 | awk -F: '{print $NF}'`
-            printf "${REAL1##* } "
-            GETS=`ls -l *mb* | wc -l`
-            if [ $(( $GETS )) -eq 0 ] ; then
-                echo "$GETS-chunks-only"
-                exit
-            fi
+            printf " ${REAL1##* }"
         done
         printf "\n"
     done
