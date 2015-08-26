@@ -24,7 +24,7 @@ function get_full {
             rm $RAMDISK/* 2>/dev/null
             OUT1=`TIMEFORMAT="%R"; time ( aria2c --dir=$RAMDISK  -x $P -s $P http://$1/$FULL ) 2>&1`
             REAL1=`echo $OUT1 | awk -F: '{print $NF}'`
-            printf " ${REAL1##* }"
+            printf "${REAL1##* }\n"
         done
         printf "\n"
     done
