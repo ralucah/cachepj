@@ -58,15 +58,15 @@ rm *done* 2>/dev/null
 START=`date +%s%N | cut -b1-13`
 
 # call function
-one_site_p2 $IP1
-#all_sites_p2
+#one_site_p2 $IP1
+all_sites_p2
 #one_site_p1 $IP1
 #all_sites_p1
 
 # busy waiting
-DONE=`ls -l *done* | wc -l`
+DONE=`ls -l | grep done | wc -l`
 while [ $DONE -ne $K ] ; do
-    DONE=`ls -l *done* | wc -l`
+    DONE=`ls -l | grep done | wc -l`
 done
 STOP=`date +%s%N | cut -b1-13`
 MS=$(( $STOP - $START ))
