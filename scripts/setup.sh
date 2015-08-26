@@ -5,7 +5,7 @@ HTTPD="/root/httpd-2.4.16"
 apt-get install wget
 tar xvfz httpd-2.4.16.tar.gz
 apt-get update #sudo
-apt-get install libapr1-dev libaprutil1-dev make curl wget aria2 parallel #sudo
+apt-get install bc libapr1-dev libaprutil1-dev make curl wget aria2 parallel #sudo
 cd $HTTPD
 pwd
 ./configure
