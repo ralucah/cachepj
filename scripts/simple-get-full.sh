@@ -6,6 +6,7 @@ IP3="54.64.186.40"
 
 TESTS=5
 K=6
+SUDO="sudo"
 
 if [ $# -ne 1 ] ; then
     echo "Arg: file size (MB)"
@@ -15,10 +16,12 @@ FILE=$1
 #####################################
 
 
-
 RAMDISK="/media/ramdsk"
-#mkdir -p $RAMDISK
-#sudo mount -t tmpfs -o size=1024M tmpfs $RAMDISK
+
+# only on first run, mount ram disk
+$SUDO mkdir -p $RAMDISK
+$SUDO mount -t tmpfs -o size=1024M tmpfs $RAMDISK
+mount
 
 function get_full() {
     IP=$1

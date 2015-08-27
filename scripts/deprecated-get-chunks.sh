@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IPS=("172.16.17.9" "172.16.35.8" "172.16.97.18")
-TAGS=("Grenoble" "Lille" "Rennes")
+TAGS=("G" "L" "R")
 TESTS=10
 
 K=6

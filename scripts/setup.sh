@@ -1,20 +1,21 @@
 #!/bin/bash
 
 HTTPD="/root/httpd-2.4.16"
+SUDO="sudo"
 
-apt-get install wget
+$SUDO apt-get install wget
+wget http://apache.crihan.fr/dist//httpd/httpd-2.4.16.tar.gz
 tar xvfz httpd-2.4.16.tar.gz
-apt-get update #sudo
-apt-get install bc libapr1-dev libaprutil1-dev make curl wget aria2 parallel #sudo
+
+$SUDO apt-get update
+$SUDO apt-get install bc libapr1-dev libaprutil1-dev make curl wget aria2 parallel
+
 cd $HTTPD
 pwd
 ./configure
 make
-make install #sudo
+$SUDO make install
 
-#wget http://apache.crihan.fr/dist//httpd/httpd-2.4.16.tar.gz
 # sudo nano /usr/local/apache2/conf/httpd.conf
-# search for Listen
-
-#sudo /usr/local/apache2/bin/apachectl -k start
-#sudo /usr/local/apache2/bin/apachectl -k status
+# search for Listen and add IP
+# sudo /usr/local/apache2/bin/apachectl -k start

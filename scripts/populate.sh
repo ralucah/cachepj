@@ -3,9 +3,9 @@
 ###################################
 K=6
 
-CHUNKS=(8 64 128) #(1 4 8 16 32 64 128)
+CHUNKS=(8 16 32)
 HTDOCS="/usr/local/apache2/htdocs/"
-SUDO=""
+SUDO="sudo"
 ###################################
 
 function populate_full {

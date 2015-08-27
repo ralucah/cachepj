@@ -6,6 +6,90 @@ IP3="54.64.186.40"
 
 K=6
 TESTS=5
+if [ $# -ne 1 ] ; then
+    echo "Arg: file size (MB)"
+    exit 1
+fi
+FILE=$1
+#####################################
+
+function clean() {
+    rm *done* 2>/dev/null
+}
+export -f clean
+
+# get from one site; p=2
+function one_site_p2() {
+    clean
+    IP=$1
+    START=`date +%s%N | cut -b1-13`
+
+    (wget -qO - http://$IP/$FILE &> /dev/null && touch done1) &
+    (wget -qO - http://$IP/$FILE &> /dev/null && touch done2)
+    busy_wait 2
+
+    (wget -qO - http://$IP/$FILE &> /dev/null && touch done3) &
+    (wget -qO - http://$IP/$FILE &> /dev/null && touch done4)
+    busy_wait 2
+
+    (wget -qO - http://$IP/$FILE &> /dev/null && touch done5) &
+    (wget -qO - http://$IP/$FILE &> /dev/null && touch done6)
+    busy_wait 2
+
+    STOP=`date +%s%N | cut -b1-13`
+    MS=$(( $STOP - $START ))
+    SEC=`bc <<< "scale = 3; $MS / 1000"`
+    printf "%0.3f" $SEC
+}
+
+# get from all sites; p=2
+function all_sites_p2() {
+    clean
+    START=`date +%s%N | cut -b1-13`
+
+    (wget -qO - http://$IP1/$FILE &> /dev/null && touch done1) &
+    (wget -qO - http://$IP1/$FILE &> /dev/null && touch done2) &
+    (wget -qO - http://$IP2/$FILE &> /dev/null && touch done3) &
+    (wget -qO - http://$IP2/$FILE &> /dev/null && touch done4) &
+    (wget -qO - http://$IP3/$FILE &> /dev/null && touch done5) &
+    (wget -qO - http://$IP3/$FILE &> /dev/null && touch done6) &
+
+    busy_wait 6
+    STOP=`date +%s%N | cut -b1-13`
+    MS=$(( $STOP - $START ))
+    SEC=`bc <<< "scale = 3; $MS / 1000"`
+    printf "%0.3f" $SEC
+}
+
+# get from one site; p=1
+function one_site_p1() {
+    clean
+    IP=$1
+    START=`date +%s%N | cut -b1-13`
+
+    (wget -qO - http://$IP/$FILE &> /dev/null)
+    (wget -qO - http://$IP/$FILE &> /dev/null)
+    (wget -qO - http://$IP/$FILE &> /dev/null)
+    (wget -qO - http://$IP/$FILE &> /dev/null)
+    (wget -qO - http://$IP/$FILE &> /dev/null)
+    (wget -qO - http://$IP/$FILE &> /dev/null)
+
+    STOP=`date +%s%N | cut -b1-13`
+    MS=$(( $STOP - $START ))
+    SEC=`bc <<< "scale = 3; $MS / 1000"`
+    printf "%0.3f" $SEC
+}
+
+# get from all sites; p=1
+function all_sites_p1() {
+    clean
+    START=`date +%s%N | cut -b1-13`
+
+    (wget -qO - http://$IP1/$FILE &> /dev/null && touch done1) &
+    (wget -qO - http://$IP2/$FILE &> /dev/null && touch done2) &
+    (wget -qO - http://$IP3/$FILE &> /dev/null && touch done3)
+    busy_wait 3
+
     (wget -qO - http://$IP1/$FILE &> /dev/null && touch done4) &
     (wget -qO - http://$IP2/$FILE &> /dev/null && touch done5) &
     (wget -qO - http://$IP3/$FILE &> /dev/null && touch done6)
