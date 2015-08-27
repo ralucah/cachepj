@@ -2,7 +2,7 @@
 
 plotchunks <- function(file, title, maxi) {
     names = c("P = 1", "P = 2")
-    colors = c("pink", "violet", "green", "red")
+    colors = c("red", "green", "blue", "yellow", "pink", "violet", "cyan", "orange")
     data <- read.table(file, sep=" ", header=TRUE)
     print(data)
     avg <- colMeans(data)
@@ -13,14 +13,14 @@ plotchunks <- function(file, title, maxi) {
         main = title,
         ylab="Time (seconds)",
         las = 2,
-        col=terrain.colors(4),
+        col=colors,
         beside=TRUE,
         ylim = c(0, maxi))
 }
 
 plotfull <- function(file, title, maxi) {
     names = c("P = 1", "P = 2")
-    #colors = c("pink", "blue", "green", "orange") 
+    colors = c("red", "green", "blue", "pink", "violet", "cyan")
     data <- read.table(file, sep=" ", header=TRUE)
     print(data)
     avg <- colMeans(data)
@@ -31,7 +31,7 @@ plotfull <- function(file, title, maxi) {
         main = title,
         ylab="Time (seconds)",
         las = 2,
-        col=topo.colors(3),
+        col=colors,
         beside=TRUE,
         ylim = c(0, maxi))
 }
@@ -43,7 +43,7 @@ par(old.par)
 
 old.par <- par(mfrow=c(1, 2))
 plotchunks("16mb.txt", "16MB chunks", 50)
-plotfull("64mb.txt", "96MB full data", 50)
+plotfull("96mb.txt", "96MB full data", 50)
 par(old.par)
 
 old.par <- par(mfrow=c(1, 2))
