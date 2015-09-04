@@ -1,0 +1,40 @@
+--- Write ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 10.8657 s, 9.7 MB/s
+---Read ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 1.2278 s, 85.4 MB/s
+--- Write ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 10.8128 s, 9.7 MB/s
+---Read ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 0.87556 s, 120 MB/s
+--- Write ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 10.7803 s, 9.7 MB/s
+---Read ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 0.875835 s, 120 MB/s
+--- Write ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 10.785 s, 9.7 MB/s
+---Read ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 0.871423 s, 120 MB/s
+--- Write ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 10.9196 s, 9.6 MB/s
+---Read ---
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 1.75465 s, 59.8 MB/s
