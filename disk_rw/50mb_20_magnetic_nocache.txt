@@ -1,0 +1,20 @@
+---Read ---
+20+0 records in
+20+0 records out
+1048576000 bytes (1.0 GB) copied, 17.6489 s, 59.4 MB/s
+---Read ---
+20+0 records in
+20+0 records out
+1048576000 bytes (1.0 GB) copied, 18.494 s, 56.7 MB/s
+---Read ---
+20+0 records in
+20+0 records out
+1048576000 bytes (1.0 GB) copied, 18.5545 s, 56.5 MB/s
+---Read ---
+20+0 records in
+20+0 records out
+1048576000 bytes (1.0 GB) copied, 18.5094 s, 56.7 MB/s
+---Read ---
+20+0 records in
+20+0 records out
+1048576000 bytes (1.0 GB) copied, 18.5458 s, 56.5 MB/s
