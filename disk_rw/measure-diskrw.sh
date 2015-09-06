@@ -14,7 +14,8 @@ for (( I=1;I<=$TESTS;I++ )) ; do
     sync && sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
 
     echo '---Read ---'
-    dd if=$FILENAME of=/dev/null bs=$BLOCKSIZE count=$BLOCKCOUNT
+    #dd if=$FILENAME of=/dev/null bs=$BLOCKSIZE count=$BLOCKCOUNT
+    scp $FILENAME localhost:/dev/null
 
     #rm -f $FILENAME
 done
