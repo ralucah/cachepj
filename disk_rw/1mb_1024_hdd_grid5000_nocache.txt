@@ -1,20 +1,20 @@
 ---Read ---
 1024+0 records in
 1024+0 records out
-1073741824 bytes (1.1 GB) copied, 0.315445 s, 3.4 GB/s
+1073741824 bytes (1.1 GB) copied, 9.84257 s, 109 MB/s
 ---Read ---
 1024+0 records in
 1024+0 records out
-1073741824 bytes (1.1 GB) copied, 0.253861 s, 4.2 GB/s
+1073741824 bytes (1.1 GB) copied, 9.78783 s, 110 MB/s
 ---Read ---
 1024+0 records in
 1024+0 records out
-1073741824 bytes (1.1 GB) copied, 0.144662 s, 7.4 GB/s
+1073741824 bytes (1.1 GB) copied, 9.79801 s, 110 MB/s
 ---Read ---
 1024+0 records in
 1024+0 records out
-1073741824 bytes (1.1 GB) copied, 0.144751 s, 7.4 GB/s
+1073741824 bytes (1.1 GB) copied, 9.77301 s, 110 MB/s
 ---Read ---
 1024+0 records in
 1024+0 records out
-1073741824 bytes (1.1 GB) copied, 0.144715 s, 7.4 GB/s
+1073741824 bytes (1.1 GB) copied, 9.77314 s, 110 MB/s
