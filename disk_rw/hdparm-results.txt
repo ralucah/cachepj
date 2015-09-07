@@ -1,0 +1,142 @@
+Grid 5000, SSD (Grenoble)
+------------------------------
+root@edel-8:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   13420 MB in  2.00 seconds = 6717.27 MB/sec
+ Timing buffered disk reads: 736 MB in  3.01 seconds = 244.86 MB/sec
+root@edel-8:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   13430 MB in  2.00 seconds = 6722.52 MB/sec
+ Timing buffered disk reads: 736 MB in  3.01 seconds = 244.84 MB/sec
+root@edel-8:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   13642 MB in  2.00 seconds = 6828.00 MB/sec
+ Timing buffered disk reads: 736 MB in  3.01 seconds = 244.86 MB/sec
+root@edel-8:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   13896 MB in  2.00 seconds = 6955.24 MB/sec
+ Timing buffered disk reads: 736 MB in  3.01 seconds = 244.86 MB/sec
+root@edel-8:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   13890 MB in  2.00 seconds = 6952.33 MB/sec
+ Timing buffered disk reads: 736 MB in  3.00 seconds = 244.94 MB/sec
+
+Grid 5000, SATA(7,200rpm) (Luxembourg)
+------------------------------
+root@petitprince-7:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   12240 MB in  2.00 seconds = 6125.41 MB/sec
+ Timing buffered disk reads: 324 MB in  3.00 seconds = 107.98 MB/sec
+root@petitprince-7:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   13122 MB in  2.00 seconds = 6567.09 MB/sec
+ Timing buffered disk reads: 324 MB in  3.01 seconds = 107.58 MB/sec
+root@petitprince-7:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   13730 MB in  2.00 seconds = 6871.36 MB/sec
+ Timing buffered disk reads: 324 MB in  3.00 seconds = 107.93 MB/sec
+root@petitprince-7:~# hdparm -Tt /dev/sda3
+
+/dev/sda3:
+ Timing cached reads:   12940 MB in  2.00 seconds = 6475.59 MB/sec
+ Timing buffered disk reads: 324 MB in  3.00 seconds = 107.89 MB/sec
+
+
+ EC2 Magnetic
+ ------------
+ ubuntu@ip-172-31-8-161:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   20918 MB in  2.00 seconds = 10471.94 MB/sec
+ Timing buffered disk reads: 122 MB in  3.02 seconds =  40.46 MB/sec
+ubuntu@ip-172-31-8-161:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   20958 MB in  2.00 seconds = 10492.78 MB/sec
+ Timing buffered disk reads: 194 MB in  3.17 seconds =  61.21 MB/sec
+ubuntu@ip-172-31-8-161:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   20940 MB in  2.00 seconds = 10483.71 MB/sec
+ Timing buffered disk reads: 214 MB in  3.06 seconds =  69.92 MB/sec
+ubuntu@ip-172-31-8-161:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   20884 MB in  2.00 seconds = 10454.88 MB/sec
+ Timing buffered disk reads: 216 MB in  3.04 seconds =  71.15 MB/sec
+ubuntu@ip-172-31-8-161:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   20828 MB in  2.00 seconds = 10427.31 MB/sec
+ Timing buffered disk reads: 216 MB in  3.03 seconds =  71.19 MB/sec
+
+
+ EC2 General purpose SSD (24 - 3000 IOPS)
+ ------------------------
+ ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21522 MB in  2.00 seconds = 10775.16 MB/sec
+ Timing buffered disk reads:  30 MB in  3.21 seconds =   9.35 MB/sec
+ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21128 MB in  2.00 seconds = 10577.66 MB/sec
+ Timing buffered disk reads: 180 MB in  3.01 seconds =  59.88 MB/sec
+ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21430 MB in  2.00 seconds = 10728.88 MB/sec
+ Timing buffered disk reads: 192 MB in  3.04 seconds =  63.19 MB/sec
+ubuntu@ip-172-31-4-139:~$ 
+ubuntu@ip-172-31-4-139:~$ 
+ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21224 MB in  2.00 seconds = 10625.31 MB/sec
+ Timing buffered disk reads: 198 MB in  3.13 seconds =  63.30 MB/sec
+ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21162 MB in  2.00 seconds = 10594.26 MB/sec
+ Timing buffered disk reads: 212 MB in  3.05 seconds =  69.40 MB/sec
+ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21236 MB in  2.00 seconds = 10631.25 MB/sec
+ Timing buffered disk reads: 216 MB in  3.03 seconds =  71.31 MB/sec
+ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21304 MB in  2.00 seconds = 10665.80 MB/sec
+ Timing buffered disk reads: 216 MB in  3.03 seconds =  71.19 MB/sec
+ubuntu@ip-172-31-4-139:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   21262 MB in  2.00 seconds = 10645.08 MB/sec
+ Timing buffered disk reads: 216 MB in  3.04 seconds =  71.15 MB/sec
+
+
+ EC2 Provisioned SSD (192 - 3000 IOPS)
+ -------------------------------------
+ /dev/xvda1:
+ Timing cached reads:   20602 MB in  2.00 seconds = 10313.78 MB/sec
+ Timing buffered disk reads:  30 MB in  3.26 seconds =   9.21 MB/sec
+ubuntu@ip-172-31-1-228:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   20724 MB in  2.00 seconds = 10374.77 MB/sec
+ Timing buffered disk reads: 190 MB in  3.07 seconds =  61.93 MB/sec
+ubuntu@ip-172-31-1-228:~$ sudo hdparm -Tt /dev/xvda1
+
+/dev/xvda1:
+ Timing cached reads:   20948 MB in  2.00 seconds = 10487.18 MB/sec
+ Timing buffered disk reads: 196 MB in  3.05 seconds =  64.26 MB/sec
