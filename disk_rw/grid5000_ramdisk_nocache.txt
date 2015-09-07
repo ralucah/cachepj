@@ -1,0 +1,21 @@
+root@parapluie-9:~# ./measure-dsk.sh 
+---Read ---
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 0.592831 s, 1.8 GB/s
+---Read ---
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 0.420407 s, 2.6 GB/s
+---Read ---
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 0.520598 s, 2.1 GB/s
+---Read ---
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 0.522437 s, 2.1 GB/s
+---Read ---
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 0.525621 s, 2.0 GB/s
