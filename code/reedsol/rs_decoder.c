@@ -215,6 +215,7 @@ int main (int argc, char **argv) {
 	matrix = reed_sol_vandermonde_coding_matrix(k, m, w);
 	timing_set(&t4);
 	totalsec += timing_delta(&t3, &t4);
+	printf("t3 = %lf, t4 = %lf, totalsec = %lf \n", timing_get(&t3), timing_get(&t4), totalsec);
 	
 	/* Begin decoding process */
 	total = 0;
@@ -328,6 +329,7 @@ int main (int argc, char **argv) {
 		n++;
 		fclose(fp);
 		totalsec += timing_delta(&t3, &t4);
+		printf("t3 = %lf, t4 = %lf, totalsec = %lf \n", timing_get(&t3), timing_get(&t4), totalsec);
 	}
 	
 	/* Free allocated memory */
@@ -344,6 +346,11 @@ int main (int argc, char **argv) {
 	tsec = timing_delta(&t1, &t2);
 	printf("Decoding (MB/sec): %0.10f\n", (((double) origsize)/1024.0/1024.0)/totalsec);
 	printf("De_Total (MB/sec): %0.10f\n\n", (((double) origsize)/1024.0/1024.0)/tsec);
+
+
+    printf("t1 = %lf, t2 = %lf\n", timing_get(&t1), timing_get(&t2));
+    printf("t3 = %lf, t4 = %lf\n", timing_get(&t3), timing_get(&t4));
+    printf("tsec = %lf, totalsec = %lf, size = %lf\n", tsec, totalsec, (double)origsize);
 
 	return 0;
 }	
