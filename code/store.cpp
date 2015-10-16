@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
     const int k = atoi(argv[2]); // number of chunks to split data into
     const int m = atoi(argv[3]); // number of redundant chunks
     //const int bytes = 8 * 125;   // number of bytes per chunk; multiple of 8
-    char *data;
+    unsigned char *data;
 
     assert(k >= 0 && k < 256);
     assert(m >= 0 && m <= 256 - k);
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     assert (bytes % 8 == 0);
     cout << "bytes: " << bytes << endl;
 
-    data = (char *)malloc(new_fsize + 1);
+    data = (unsigned char *)calloc(new_fsize, sizeof(unsigned char));
     if (!data) {
         cout << "Error allocating memory for data buffer" << endl;
         exit(1);
@@ -71,56 +71,26 @@ int main(int argc, char* argv[]) {
     //cout << data << endl;
 
     // split data into chunks, add padding to last chunk if necessary
+    const unsigned char *data_ptrs[k];
+    for (int i = 0; i < k; i++) {
+        data_ptrs[i] = data + i * bytes;
+    }
+
     return 0;
 
-    /*unsigned char *data = new unsigned char[block_bytes * block_count];
-    unsigned char *recovery_blocks = new unsigned char[block_bytes * recovery_block_count];
-    Block *blocks = new Block[block_count];
+    //assert(!cauchy_256_encode(block_count, recovery_block_count, data_ptrs, recovery_blocks, block_bytes));
 
-    const unsigned char *data_ptrs[256];
-    for (int i = 0; i < block_count; ++i) {
-        data_ptrs[i] = data + i * block_bytes;
-    }
-
-    for (int i = 0; i < block_bytes * block_count; ++i) {
-        data[i] = (unsigned char)'0';
-    }
-
-    assert(!cauchy_256_encode(block_count, recovery_block_count, data_ptrs, recovery_blocks, block_bytes));
-
-    cout << "Before decode:" << endl;
-    for (int i = 0; i < block_count; ++i) {
-        cout << (int)blocks[i].row << endl;
-    }
-
-    assert(!cauchy_256_decode(block_count, recovery_block_count, blocks, block_bytes));
-
-    cout << "After decode:" << endl;
+    /*cout << "Before decode:" << endl;
     for (int i = 0; i < block_count; ++i) {
         cout << (int)blocks[i].row << endl;
     }*/
 
-    //char *recoveryBlocks = new char[m * bytes];
-    //char *dataPtrs[32];
+    //assert(!cauchy_256_decode(block_count, recovery_block_count, blocks, block_bytes));
 
-    /* point data pointers to data here */
-    //for (int i = 0; i < )
-
-    /* encode the data */
-    /*if (cauchy_256_encode(k, m, data_ptrs, recovery_blocks, bytes)) {
-        // Input was invalid
-        return false;
-    }
-
-    // For each recovery block,
-    for (int ii = 0; ii < m; ++ii) {
-        char *block = recovery_blocks + ii * bytes;
-        unsigned char row = k + ii; // Transmit this with block (just one byte)
-
-        // Transmit or store block bytes and row
-    }
-
-    delete []recovery_blocks;*/
+    /*cout << "After decode:" << endl;
+    for (int i = 0; i < block_count; ++i) {
+        cout << (int)blocks[i].row << endl;
+    }*/
 
     return 0;
 }
