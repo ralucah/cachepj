@@ -34,16 +34,18 @@ int main(int argc, char* argv[]) {
     const int k = atoi(argv[2]); // number of chunks to split data into
     const int m = atoi(argv[3]); // number of redundant chunks
     //const int bytes = 8 * 125;   // number of bytes per chunk; multiple of 8
+    char *data;
 
     assert(k >= 0 && k < 256);
     assert(m >= 0 && m <= 256 - k);
     //assert(bytes % 8 == 0);
 
     FILE *f = fopen(filename, "rb");
+    assert(f);
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);
-    fclose(f);
+
 
     // is padding necessary?
     int new_fsize = fsize;
@@ -57,6 +59,18 @@ int main(int argc, char* argv[]) {
     const int bytes = new_fsize / k; // number of bytes per chunk; multiple of 8
     assert (bytes % 8 == 0);
     cout << "bytes: " << bytes << endl;
+
+    data = (char *)malloc(new_fsize + 1);
+    if (!data) {
+        cout << "Error allocating memory for data buffer" << endl;
+        exit(1);
+    }
+    fread(data, new_fsize, 1, f);
+    fclose(f);
+    free(data);
+    //cout << data << endl;
+
+    // split data into chunks, add padding to last chunk if necessary
     return 0;
 
     /*unsigned char *data = new unsigned char[block_bytes * block_count];
