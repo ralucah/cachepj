@@ -33,44 +33,33 @@ int main(int argc, char* argv[]) {
     const char* filename = argv[1];
     const int k = atoi(argv[2]); // number of chunks to split data into
     const int m = atoi(argv[3]); // number of redundant chunks
-    const int bytes = 8 * 125;   // number of bytes per chunk; multiple of 8
+    //const int bytes = 8 * 125;   // number of bytes per chunk; multiple of 8
 
     assert(k >= 0 && k < 256);
     assert(m >= 0 && m <= 256 - k);
-    assert(bytes % 8 == 0);
+    //assert(bytes % 8 == 0);
 
     FILE *f = fopen(filename, "rb");
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);
+    fclose(f);
 
-    // determine new size
+    // is padding necessary?
     int new_fsize = fsize;
-    if (fsize % bytes != 0) {
-        while (new_fsize % bytes != 0 )
+    if (fsize % (8 * k) != 0) {
+        while (new_fsize % (8 * k) != 0)
             new_fsize++;
     }
 
     cout << "fsize: " << fsize << " new_fsize: " << new_fsize << endl;
 
-    //char *string = (char*) malloc(fsize + 1);
-    //fread(string, fsize, 1, f);
-    fclose(f);
-
-
-
+    const int bytes = new_fsize / k; // number of bytes per chunk; multiple of 8
+    assert (bytes % 8 == 0);
+    cout << "bytes: " << bytes << endl;
     return 0;
 
-    /* number of chunks to split the data into; less than 256 */
-    int block_count = 4;
-    /* number of redundant chunks; no more than 256 - k */
-    int recovery_block_count = 2;
-    /* number of bytes per chunk, multiple of 8 */
-    int block_bytes = 8 * 125;
-
-    assert(block_bytes % 8 == 0);
-
-    unsigned char *data = new unsigned char[block_bytes * block_count];
+    /*unsigned char *data = new unsigned char[block_bytes * block_count];
     unsigned char *recovery_blocks = new unsigned char[block_bytes * recovery_block_count];
     Block *blocks = new Block[block_count];
 
@@ -95,7 +84,7 @@ int main(int argc, char* argv[]) {
     cout << "After decode:" << endl;
     for (int i = 0; i < block_count; ++i) {
         cout << (int)blocks[i].row << endl;
-    }
+    }*/
 
     //char *recoveryBlocks = new char[m * bytes];
     //char *dataPtrs[32];
