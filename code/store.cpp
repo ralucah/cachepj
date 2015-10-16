@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     const char* filename = argv[1];
     const int k = atoi(argv[2]); // number of chunks to split data into
     const int m = atoi(argv[3]); // number of redundant chunks
-    const int bytes = 8 * 125; // number of bytes per chunk; multiple of 8
+    const int bytes = 8 * 125;   // number of bytes per chunk; multiple of 8
 
     assert(k >= 0 && k < 256);
     assert(m >= 0 && m <= 256 - k);
@@ -44,11 +44,20 @@ int main(int argc, char* argv[]) {
     long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);
 
-    char *string = (char*) malloc(fsize + 1);
-    fread(string, fsize, 1, f);
+    // determine new size
+    int new_fsize = fsize;
+    if (fsize % bytes != 0) {
+        while (new_fsize % bytes != 0 )
+            new_fsize++;
+    }
+
+    cout << "fsize: " << fsize << " new_fsize: " << new_fsize << endl;
+
+    //char *string = (char*) malloc(fsize + 1);
+    //fread(string, fsize, 1, f);
     fclose(f);
 
-    string[fsize] = 0;
+
 
     return 0;
 
