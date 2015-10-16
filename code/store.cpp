@@ -81,21 +81,23 @@ int main(int argc, char* argv[]) {
     assert(!cauchy_256_encode(k, m, data_ptrs, recovery_blocks, bytes));
 
     Block *blocks = new Block[k];
-    for (int i = 0; i < k; i++) {
+    for (int i = 0; i < k; ++i) {
         blocks[i].data = (unsigned char*)data_ptrs[i];
         blocks[i].row = (unsigned char)i;
     }
+    int i = 1;
+    blocks[i].data = recovery_blocks + i * bytes;
 
     cout << "Before decode:" << endl;
-    for (int i = 0; i < k; i++) {
-        cout << (int)blocks[i].row << endl;
+    for (int i = 0; i < k; ++i) {
+        cout << blocks[i].data << endl;
     }
 
     assert(!cauchy_256_decode(k, m, blocks, bytes));
 
     cout << "After decode:" << endl;
-    for (int i = 0; i < k; i++) {
-        cout << (int)blocks[i].row << endl;
+    for (int i = 0; i < k; ++i) {
+        cout << blocks[i].data << endl;
     }
 
     return 0;
