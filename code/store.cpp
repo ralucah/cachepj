@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "cauchy_256.h"
 
@@ -37,19 +39,16 @@ int main(int argc, char* argv[]) {
     assert(m >= 0 && m <= 256 - k);
     assert(bytes % 8 == 0);
 
-    ifstream infile;
-    string line;
-    infile.open(filename);
-    if (infile.fail()) {
-        cout << "Error opening file " << filename << endl;
-        return 1;
-    } else {
-        while (!infile.eof()) {
-            getline(infile, line);
-            cout << line << endl;
-        }
-        infile.close();
-    }
+    FILE *f = fopen(filename, "rb");
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char *string = (char*) malloc(fsize + 1);
+    fread(string, fsize, 1, f);
+    fclose(f);
+
+    string[fsize] = 0;
 
     return 0;
 
