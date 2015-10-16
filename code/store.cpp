@@ -76,21 +76,27 @@ int main(int argc, char* argv[]) {
         data_ptrs[i] = data + i * bytes;
     }
 
-    return 0;
+    unsigned char *recovery_blocks = (unsigned char *)malloc(bytes * m);
 
-    //assert(!cauchy_256_encode(block_count, recovery_block_count, data_ptrs, recovery_blocks, block_bytes));
+    assert(!cauchy_256_encode(k, m, data_ptrs, recovery_blocks, bytes));
 
-    /*cout << "Before decode:" << endl;
-    for (int i = 0; i < block_count; ++i) {
+    Block *blocks = new Block[k];
+    for (int i = 0; i < k; i++) {
+        blocks[i].data = (unsigned char*)data_ptrs[i];
+        blocks[i].row = (unsigned char)i;
+    }
+
+    cout << "Before decode:" << endl;
+    for (int i = 0; i < k; i++) {
         cout << (int)blocks[i].row << endl;
-    }*/
+    }
 
-    //assert(!cauchy_256_decode(block_count, recovery_block_count, blocks, block_bytes));
+    assert(!cauchy_256_decode(k, m, blocks, bytes));
 
-    /*cout << "After decode:" << endl;
-    for (int i = 0; i < block_count; ++i) {
+    cout << "After decode:" << endl;
+    for (int i = 0; i < k; i++) {
         cout << (int)blocks[i].row << endl;
-    }*/
+    }
 
     return 0;
 }
