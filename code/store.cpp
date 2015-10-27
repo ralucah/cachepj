@@ -1,5 +1,6 @@
-// g++ store.cpp liblonghair.a -I/home/ubuntu/cache-project/longhair/include -g -o store
-// gdb --args ./store encode wiki.txt 4 3
+// g++ coder.cpp liblonghair.a -I/home/ubuntu/cache-project/longhair/include -g -o coder
+// gdb --args ./coder encode parrot.jpg 4 3
+// gdb --args ./coder decode parrot.jpg 4 3
 
 #include <stdio.h>
 #include <string.h>
