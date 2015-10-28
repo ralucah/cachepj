@@ -16,27 +16,30 @@
 
 using namespace std;
 
-unsigned char* read_data_from_file(const char *filename, const unsigned int k, \
+unsigned char* read_file(const char *filename, \
+                              const unsigned int k, \
                               unsigned int *data_size, \
                               unsigned int *original_data_size) {
     unsigned char* data;
     long fsize, new_fsize;
 
+    /* find fsize */
     FILE *f = fopen(filename, "rb");
     assert(f);
     fseek(f, 0, SEEK_END);
     fsize = ftell(f);
     fseek(f, 0, SEEK_SET);
 
-    // is padding necessary?
+    /* is padding necessary? */
     new_fsize = fsize;
     if (fsize % (8 * k) != 0) {
         while (new_fsize % (8 * k) != 0)
             new_fsize++;
     }
 
-    cout << "fsize: " << fsize << " new_fsize: " << new_fsize << endl;
+    //cout << "fsize: " << fsize << " new_fsize: " << new_fsize << endl;
 
+    /* read file content in memory */
     data = (unsigned char *)calloc(new_fsize, sizeof(unsigned char));
     if (!data) {
         cout << "Error allocating memory for data buffer" << endl;
@@ -46,6 +49,7 @@ unsigned char* read_data_from_file(const char *filename, const unsigned int k, \
     fclose(f);
     //cout << data << endl;
 
+    /* also return fsize and fsize with padding */
     *data_size = new_fsize;
     *original_data_size = fsize;
     return data;
@@ -73,19 +77,22 @@ void free_blocks(Block *blocks, unsigned int num_blocks) {
     }
 }
 
-Block* encode(const unsigned char *data, const unsigned int data_size, \
-            const unsigned int k, const unsigned int m) {
-    cout << "Encode data with k:" << k << " and m:" << m << endl;
+Block* encode(const unsigned char *data, \
+            const unsigned int data_size, \
+            const unsigned int k, \
+            const unsigned int m) {
+    //cout << "Encode data with k:" << k << " and m:" << m << endl;
 
-    const int bytes_per_chunk = data_size / k; // number of bytes per chunk; multiple of 8
+    /* number of bytes per chunk; multiple of 8 */
+    const int bytes_per_chunk = data_size / k;
     assert (bytes_per_chunk % 8 == 0);
-    cout << "bytes_per_chunk: " << bytes_per_chunk << endl;
+    //cout << "bytes_per_chunk: " << bytes_per_chunk << endl;
 
-    // split data into chunks, add padding to last chunk if necessary
+    /* split data into chunks, add padding to last chunk if necessary */
     const unsigned char *data_ptrs[k];
     for (int i = 0; i < k; ++i) {
         data_ptrs[i] = data + i * bytes_per_chunk;
-        //cout << i << "-------------------------------------------------------";
+        //cout << i << "-----------------------------------------------";
         //cout << data << endl;
     }
 
@@ -120,13 +127,13 @@ Block* read_blocks(const char *filename, const unsigned int k, const unsigned in
     bool enough_blocks = false;
     while (i < (k + m) && enough_blocks == false) {
         sprintf(blockname, "%s_%d", filename, i);
-        cout << "blockname: " << blockname << endl;
+        //cout << "blockname: " << blockname << endl;
         f = fopen(blockname, "rb");
         if (f != NULL) {
             fseek(f, 0, SEEK_END);
             fsize = ftell(f);
             fseek(f, 0, SEEK_SET);
-            cout << "fsize: " << fsize << endl;
+            //cout << "fsize: " << fsize << endl;
             blocks[block_num].data = (unsigned char*)malloc(fsize * sizeof(unsigned char));
             fread(blocks[block_num].data, fsize, 1, f);
             blocks[block_num].row = (unsigned char)i;
@@ -138,28 +145,32 @@ Block* read_blocks(const char *filename, const unsigned int k, const unsigned in
         i++;
     }
 
+    assert(enough_blocks == true);
+
     return blocks;
 }
 
+// TODO make decode fail nicely if not enough blocks are available
 Block* decode(const char *filename, Block *blocks, \
             const unsigned int k, const unsigned int m, \
             const unsigned int bytes) {
-    //cout << "Decode " << filename << " with k:" << k << " and m:" << m << endl;
+    /*cout << "Decode " << filename << " with k:" << k << " and m:" << m << endl;
     for (int i = 0; i < k; ++i) {
         cout << (int)blocks[i].row << endl;
-    }
+    }*/
     assert(!cauchy_256_decode(k, m, blocks, bytes));
 
-    cout << "After decode:" << endl;
+    /*cout << "After decode:" << endl;
     for (int i = 0; i < k; ++i) {
         cout << (int)blocks[i].row << endl;
-        //cout << blocks[i].data << endl;
-    }
+        cout << blocks[i].data << endl;
+    }*/
 
     return blocks;
 }
 
-void write_blocks_to_one_file(const char* filename, Block *blocks, const unsigned int k, \
+/* write the decoded blocks to one file */
+void write_decoded_blocks(const char* filename, Block *blocks, const unsigned int k, \
                           const unsigned int block_size, \
                           const unsigned int original_data_size) {
 
@@ -171,7 +182,7 @@ void write_blocks_to_one_file(const char* filename, Block *blocks, const unsigne
     for (int i = 0; i < k; ++i) {
         for (int j = 0; j < k; ++j) {
             if (blocks[j].row == i) {
-                cout << "Printing row " << (int)blocks[j].row << endl;
+                //cout << "Printing row " << (int)blocks[j].row << endl;
                 if (i != k - 1) {
                     fwrite(blocks[j].data, block_size, 1, f);
                 } else {
@@ -185,15 +196,16 @@ void write_blocks_to_one_file(const char* filename, Block *blocks, const unsigne
 }
 
 int main(int argc, char* argv[]) {
-    printf("First encode, then store!\n");
+    printf("Hello, coder!");
 
+    /* longhair mandatory check */
     if (cauchy_256_init()) {
-        // Wrong static library
         exit(1);
     }
 
+    /* how to use */
     if (argc != 5) {
-        cout << "Usage: " << argv[0] << " operation inputfile k m" << endl;
+        cout << "How to use: " << argv[0] << " [encode|decode] file k m" << endl;
         exit(1);
     }
 
@@ -206,7 +218,7 @@ int main(int argc, char* argv[]) {
     assert(m >= 0 && m <= 256 - k);
 
     unsigned int data_size, original_data_size;
-    unsigned char *data = read_data_from_file(filename, k, &data_size, &original_data_size);
+    unsigned char *data = read_file(filename, k, &data_size, &original_data_size);
 
     if (strcmp(operation, "encode") == 0) {
         Block *blocks = encode(data, data_size, k, m);
@@ -215,19 +227,11 @@ int main(int argc, char* argv[]) {
     } else if (strcmp(operation, "decode") == 0) {
         Block *blocks = read_blocks(filename, k, m);
         Block *decoded_blocks = decode(filename, blocks, k, m, data_size / k);
-        write_blocks_to_one_file(filename, decoded_blocks, k, data_size / k, original_data_size);
+        write_decoded_blocks(filename, decoded_blocks, k, data_size / k, original_data_size);
     } else {
         cout << "Error: unknown operation" << endl;
         exit(1);
     }
 
-    /*assert(!cauchy_256_decode(k, m, blocks, bytes));
-
-    cout << "After decode:" << endl;
-    for (int i = 0; i < k; ++i) {
-        cout << (int)blocks[i].row << endl;
-        //cout << blocks[i].data << endl;
-    }
-*/
     return 0;
 }
