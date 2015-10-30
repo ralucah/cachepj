@@ -12,6 +12,8 @@ import (
     "os/exec"
     "strings"
     "crypto/sha1"
+    "runtime"
+    "sync"
     "github.com/cockroachdb/cockroach/client"
     "github.com/cockroachdb/cockroach/util/stop"
 )
@@ -71,36 +73,53 @@ func how_to_use() (string, string) {
 
 func compute_key(path string) string {
     key := sha1.Sum([]byte(path))
-    log.Printf("key: %x\n", key)
+    //log.Printf("key: %x\n", key)
     key_str := fmt.Sprintf("%x", key)
-    log.Printf("key_str: %s\n", key_str)
+    //log.Printf("key_str: %s\n", key_str)
     return key_str
 }
 
-/* sequential for now */
-func put_chunks(path string) {
-    for i := 0; i < (k + m); i++ {
-        str := []string{path, "_", strconv.Itoa(i)}
-        chunk_path := strings.Join(str, "")
-        key_str := compute_key(chunk_path)
-        value := read_file(chunk_path)
-        log.Print(chunk_path, " ", key_str, " ", len(value))
-        err := db.Put(key_str, string(value))
-        check(err)
-        log.Print("OK")
-    }
+func put(path string, chunk int, wg *sync.WaitGroup) {
+    fmt.Println(chunk)
+    str := []string{path, "_", strconv.Itoa(chunk)}
+    chunk_path := strings.Join(str, "")
+    key_str := compute_key(chunk_path)
+    value := read_file(chunk_path)
+    log.Print("put ", chunk_path, " ", key_str)
+    err := db.Put(key_str, string(value))
+    check(err)
+    fmt.Println("put Done")
+    wg.Done()
 }
 
-/* sequential for now */
-func get_chunks(path string) {
+func put_chunks(path string) {
+    var wg sync.WaitGroup
+    wg.Add(k + m)
     for i := 0; i < (k + m); i++ {
-        str := []string{path, "_", strconv.Itoa(i)}
-        chunk_path := strings.Join(str, "")
-        key_str := compute_key(chunk_path)
-        res, err := db.Get(key_str)
-        check(err)
-        write_file(chunk_path, res.ValueBytes())
+        go put(path, i, &wg)
     }
+    wg.Wait()
+}
+
+func get(path string, chunk int, wg *sync.WaitGroup) {
+    str := []string{path, "_", strconv.Itoa(chunk)}
+    chunk_path := strings.Join(str, "")
+    key_str := compute_key(chunk_path)
+    log.Print("get ", chunk_path, " ", key_str)
+    res, err := db.Get(key_str)
+    check(err)
+    write_file(chunk_path, res.ValueBytes())
+    fmt.Println("get Done")
+    wg.Done()
+}
+
+func get_chunks(path string) {
+    var wg sync.WaitGroup
+    wg.Add(k)
+    for i := 0; i < (k + m); i++ {
+        go get(path, i, &wg)
+    }
+    wg.Wait()
 }
 
 func encode(path string) {
@@ -125,6 +144,8 @@ func decode(path string) {
 }
 
 func main() {
+    log.Println(runtime.NumCPU())
+
     cmd, path := how_to_use()
     log.Print(cmd, " ", path)
 
@@ -144,7 +165,7 @@ func main() {
         case "get":
             fmt.Println("get")
             get_chunks(path)
-            decode(path)
+            //decode(path)
         }
     }
 }
