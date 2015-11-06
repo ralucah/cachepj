@@ -12,10 +12,12 @@ import (
     "os/exec"
     "strings"
     "crypto/sha1"
-    "runtime"
+    //"runtime"
     "sync"
+    "time"
+    "net/http"
     "github.com/cockroachdb/cockroach/client"
-    "github.com/cockroachdb/cockroach/util/stop"
+    //"github.com/cockroachdb/cockroach/util/stop"
 )
 
 /* errasure coding parameters */
@@ -143,8 +145,44 @@ func decode(path string) {
     }
 }
 
+func myHandler(writer http.ResponseWriter, req *http.Request) {
+    /*err := req.ParseForm()
+    if err != nil {
+        log.Fatal("Error parsing form!")
+    }*/
+
+    fmt.Println("I am the http handler")
+    fmt.Println("Method: ", req.Method)
+    fmt.Println("URL: ", req.URL)
+    fmt.Println("Header: ", req.Header)
+    fmt.Println("Body: ", req.Body)
+    fmt.Println("ContentLength: ", req.ContentLength)
+    fmt.Println("Close: ", req.Close)
+    fmt.Println("RemoteAddr: ", req.RemoteAddr)
+    fmt.Println("TransferEncoding: ", req.TransferEncoding)
+
+    if req.ContentLength > 0 {
+        content, err := ioutil.ReadAll(req.Body)
+        if err != nil {
+            log.Fatal("Error reading content of http req: ", err)
+        }
+        fmt.Println("Content: ", string(content))
+    }
+}
+
 func main() {
-    log.Println(runtime.NumCPU())
+    server := &http.Server {
+        Addr:           ":8080",
+        Handler:        http.HandlerFunc(myHandler),
+        ReadTimeout:    10 * time.Second,
+        WriteTimeout:   10 * time.Second,
+        MaxHeaderBytes: 1 << 20,
+    }
+    log.Fatal(server.ListenAndServe())
+
+    fmt.Println("After listenAndServe")
+
+    /*log.Println(runtime.NumCPU())
 
     cmd, path := how_to_use()
     log.Print(cmd, " ", path)
@@ -155,8 +193,9 @@ func main() {
 
     switch mode := file_or_dir(path); {
     case mode.IsDir():
-        //fmt.Println("directory")
+        fmt.Println("directory")
     case mode.IsRegular():
+        fmt.Println("regurlar file")
         switch cmd {
         case "put":
             fmt.Println("put")
@@ -165,7 +204,7 @@ func main() {
         case "get":
             fmt.Println("get")
             get_chunks(path)
-            //decode(path)
+            decode(path)
         }
-    }
+    }*/
 }
